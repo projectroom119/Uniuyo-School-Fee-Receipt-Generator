@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>University of Uyo Receipt Generator</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .form-label {
+        font-weight: 500;
+      }
+      .spinner-border {
+        display: none;
+      }
+      .was-validated .form-control:invalid,
+      .was-validated .form-select:invalid {
+        border-color: #dc3545;
+      }
+      .was-validated .form-control:valid,
+      .was-validated .form-select:valid {
+        border-color: #28a745;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-lg mt-4 mb-5">
+      <div class="card shadow p-4">
+        <h2 class="text-center text-primary mb-4">
+          🎓 University of Uyo - Receipt Generator
+        </h2>
+
+        {% if message %}
+        <div class="alert alert-danger text-center">{{ message }}</div>
+        {% endif %}
+
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          class="needs-validation"
+          novalidate
+          onsubmit="handleSubmit(event)"
+        >
+          <div class="row g-3">
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label"
+                >RegNo
+                <span data-bs-toggle="tooltip" title="e.g. 24/SC/CO/634"
+                  >🛈</span
+                ></label
+              >
+              <input type="text" name="regno" class="form-control" required />
+              <div class="invalid-feedback">
+                RegNo is required. Format: 24/SC/CO/634
+              </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Full Name 👤</label>
+              <input
+                type="text"
+                name="fullname"
+                class="form-control"
+                required
+              />
+              <div class="invalid-feedback">Full name is required.</div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Dept./Faculty</label>
+              <input
+                type="text"
+                name="dept"
+                value="Software Engineering/Computing"
+                class="form-control"
+                required
+              />
+              <div class="invalid-feedback">Department is required.</div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Programme</label>
+              <input
+                type="text"
+                name="programme"
+                value="B.Sc Software Engineering"
+                class="form-control"
+                required
+              />
+              <div class="invalid-feedback">Programme is required.</div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Programme Type</label>
+              <input
+                type="text"
+                name="progtype"
+                value="UTME/Undergraduate/Full-Time"
+                class="form-control"
+                required
+              />
+              <div class="invalid-feedback">Programme type is required.</div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Phone Number 📱</label>
+              <input
+                type="tel"
+                name="phone"
+                pattern="[0-9]{11}"
+                maxlength="11"
+                class="form-control"
+                required
+              />
+              <div class="invalid-feedback">
+                Phone number must be exactly 11 digits (e.g. 08012345678)
+              </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">RRR</label>
+              <input
+                type="text"
+                name="rrr"
+                pattern="\d{12} - (First|Second) Semester"
+                class="form-control"
+                required
+              />
+              <div class="invalid-feedback">
+                RRR must be 12 digits followed by ' - First Semester' or ' -
+                Second Semester'
+              </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Gender</label>
+              <select name="gender" class="form-select" required>
+                <option value="">--Select--</option>
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+              <div class="invalid-feedback">Please select your gender.</div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Session</label>
+              <select name="session" class="form-select" required>
+                <option>2024/2025</option>
+                <option>2023/2024</option>
+              </select>
+              <div class="invalid-feedback">Please select your session.</div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Level</label>
+              <select name="level" class="form-select" required>
+                <option>100L</option>
+                <option>200L</option>
+                <option>300L</option>
+                <option>400L</option>
+              </select>
+              <div class="invalid-feedback">Please select your level.</div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Date</label>
+              <input type="date" name="date" class="form-control" required />
+              <div class="invalid-feedback">Please select a valid date.</div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Passport Photo 🖼</label>
+              <input
+                type="file"
+                name="passport"
+                accept="image/*"
+                class="form-control"
+                required
+              />
+              <div class="invalid-feedback">Passport image is required.</div>
+            </div>
+          </div>
+
+          <div class="d-grid mt-4">
+            <button type="submit" id="submitBtn" class="btn btn-primary">
+              <span
+                class="spinner-border spinner-border-sm"
+                id="spinner"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              🖨️ Generate Receipt PDF
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      [...tooltips].forEach((el) => new bootstrap.Tooltip(el));
+
+      (() => {
+        "use strict";
+        const forms = document.querySelectorAll(".needs-validation");
+        Array.from(forms).forEach((form) => {
+          form.addEventListener(
+            "submit",
+            (event) => {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add("was-validated");
+              }
+            },
+            false
+          );
+        });
+      })();
+
+      function handleSubmit(event) {
+        const form = event.target;
+        if (!form.checkValidity()) return;
+        const spinner = document.getElementById("spinner");
+        const button = document.getElementById("submitBtn");
+        spinner.style.display = "inline-block";
+        button.disabled = true;
+      }
+    </script>
+  </body>
+</html>
